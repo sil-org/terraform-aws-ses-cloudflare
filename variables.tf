@@ -3,6 +3,18 @@ variable "email_from_address" {
   type        = string
 }
 
+variable "cloudflare_domain" {
+  description = "domain defined in a Cloudflare zone for the DNS records to be created, uses the email_from_address domain if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "mail_from_subdomain" {
+  description = "subdomain of the email domain used for creating the custom mail-from domain"
+  type        = string
+  default     = "bounce"
+}
+
 variable "create_smtp_user" {
   description = "create an IAM user and key for sending by SMTP"
   type        = bool
@@ -49,12 +61,6 @@ variable "dmarc_record_text" {
   description = "text string for the email domain DMARC record"
   type        = string
   default     = "v=DMARC1; p=none; sp=reject"
-}
-
-variable "mail_from_subdomain" {
-  description = "subdomain of the email domain used for creating the custom mail-from domain"
-  type        = string
-  default     = "bounce"
 }
 
 variable "extra_tags" {
