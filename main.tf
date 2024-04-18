@@ -15,7 +15,7 @@ data "aws_caller_identity" "this" {}
 data "aws_region" "current" {}
 
 data "cloudflare_zone" "this" {
-  name = local.email_domain
+  name = var.cloudflare_domain == "" ? local.email_domain : var.cloudflare_domain
 }
 
 /*
