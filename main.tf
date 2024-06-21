@@ -126,6 +126,7 @@ resource "aws_iam_user_policy" "smtp" {
         {
           Effect = "Allow",
           Action = [
+            "ses:sendEmail",
             "ses:sendRawEmail",
           ]
           Resource = "*",
