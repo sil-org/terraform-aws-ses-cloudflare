@@ -126,9 +126,10 @@ resource "aws_iam_user_policy" "smtp" {
         {
           Effect = "Allow",
           Action = [
+            "ses:sendEmail",
             "ses:sendRawEmail",
           ]
-          Resource = "*",
+          Resource = aws_ses_domain_identity.this.arn,
           Condition = {
             StringEquals = {
               "ses:FromAddress" = var.email_from_address
