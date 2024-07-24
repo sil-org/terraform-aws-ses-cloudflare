@@ -1,11 +1,6 @@
 locals {
-  aws_account = data.aws_caller_identity.this.account_id
-  aws_region  = data.aws_region.current.name
-  default_tags = merge({
-    managed_by = "terraform"
-    workspace  = terraform.workspace
-  }, var.extra_tags)
-  cloudflare_tags  = [for k, v in local.default_tags : "${k}:${v}"]
+  aws_account      = data.aws_caller_identity.this.account_id
+  aws_region       = data.aws_region.current.name
   email_domain     = split("@", var.email_from_address)[1]
   mail_from_domain = "${var.mail_from_subdomain}.${local.email_domain}"
 }
@@ -37,7 +32,7 @@ resource "cloudflare_record" "ses_dkim" {
   type    = "CNAME"
   zone_id = data.cloudflare_zone.this.id
   value   = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}.dkim.amazonses.com"
-  tags    = local.cloudflare_tags
+  tags    = var.cloudflare_tags
   comment = "DKIM record for email authentication"
 }
 
@@ -49,7 +44,7 @@ resource "cloudflare_record" "spf" {
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
   value   = var.spf_record_text
-  tags    = local.cloudflare_tags
+  tags    = var.cloudflare_tags
   comment = "SPF record for email authentication"
 }
 
@@ -64,7 +59,7 @@ resource "cloudflare_record" "dmarc" {
   value = var.dmarc_record_text
 
   comment = "DMARC record for ${local.email_domain}"
-  tags    = local.cloudflare_tags
+  tags    = var.cloudflare_tags
 }
 
 /*
@@ -85,7 +80,7 @@ resource "cloudflare_record" "from_domain_mx" {
   zone_id  = data.cloudflare_zone.this.id
   priority = 10
   value    = "feedback-smtp.${local.aws_region}.amazonses.com"
-  tags     = local.cloudflare_tags
+  tags     = var.cloudflare_tags
   comment  = "MX record for ${local.email_domain} bounce messages"
 }
 
@@ -94,7 +89,7 @@ resource "cloudflare_record" "from_domain_spf" {
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
   value   = "v=spf1 include:amazonses.com ~all"
-  tags    = local.cloudflare_tags
+  tags    = var.cloudflare_tags
   comment = "SPF record for ${local.email_domain} bounce messages"
 }
 

@@ -17,7 +17,7 @@ module "all" {
   create_dmarc_record = true
   dmarc_record_text   = "v=DMARC1; p=none; sp=reject"
   mail_from_subdomain = "bounce"
-  extra_tags          = { customer = "Acme, Inc." }
+  cloudflare_tags     = ["customer:Acme, Inc."]
 }
 
 provider "aws" {
