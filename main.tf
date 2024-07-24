@@ -1,6 +1,6 @@
 locals {
-  aws_account = data.aws_caller_identity.this.account_id
-  aws_region  = data.aws_region.current.name
+  aws_account      = data.aws_caller_identity.this.account_id
+  aws_region       = data.aws_region.current.name
   email_domain     = split("@", var.email_from_address)[1]
   mail_from_domain = "${var.mail_from_subdomain}.${local.email_domain}"
 }

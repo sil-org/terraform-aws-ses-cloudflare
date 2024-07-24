@@ -66,7 +66,7 @@ variable "dmarc_record_text" {
 variable "cloudflare_tags" {
   description = "tags to include in Cloudflare records; managed_by:\"terraform\" is included by default"
   type        = list(string)
-  default     = [
+  default = [
     "managed_by:terraform",
   ]
 }
