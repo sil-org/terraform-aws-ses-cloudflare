@@ -1,3 +1,6 @@
+output "ses_domain_identity_arn" {
+  value = aws_ses_domain_identity.this.arn
+}
 
 output "smtp_host" {
   value = var.create_smtp_user ? "email-smtp.${local.aws_region}.amazonaws.com" : null
