@@ -63,8 +63,10 @@ variable "dmarc_record_text" {
   default     = "v=DMARC1; p=none; sp=reject"
 }
 
-variable "extra_tags" {
-  description = "extra tags to include in Cloudflare tags; managed_by:\"terraform\" and workspace:terraform.workspace are included automatically"
-  type        = map(string)
-  default     = {}
+variable "cloudflare_tags" {
+  description = "tags to include in Cloudflare records; managed_by:\"terraform\" is included by default"
+  type        = list(string)
+  default     = [
+    "managed_by:terraform",
+  ]
 }
