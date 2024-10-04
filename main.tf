@@ -31,7 +31,7 @@ resource "cloudflare_record" "ses_dkim" {
   name    = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}._domainkey.${local.email_domain}"
   type    = "CNAME"
   zone_id = data.cloudflare_zone.this.id
-  value   = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}.dkim.amazonses.com"
+  content = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}.dkim.amazonses.com"
   tags    = var.cloudflare_tags
   comment = "DKIM record for email authentication"
 }
@@ -43,7 +43,7 @@ resource "cloudflare_record" "spf" {
   name    = local.email_domain
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
-  value   = var.spf_record_text
+  content = var.spf_record_text
   tags    = var.cloudflare_tags
   comment = "SPF record for email authentication"
 }
@@ -56,7 +56,7 @@ resource "cloudflare_record" "dmarc" {
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
 
-  value = var.dmarc_record_text
+  content = var.dmarc_record_text
 
   comment = "DMARC record for ${local.email_domain}"
   tags    = var.cloudflare_tags
@@ -79,7 +79,7 @@ resource "cloudflare_record" "from_domain_mx" {
   type     = "MX"
   zone_id  = data.cloudflare_zone.this.id
   priority = 10
-  value    = "feedback-smtp.${local.aws_region}.amazonses.com"
+  content  = "feedback-smtp.${local.aws_region}.amazonses.com"
   tags     = var.cloudflare_tags
   comment  = "MX record for ${local.email_domain} bounce messages"
 }
@@ -88,7 +88,7 @@ resource "cloudflare_record" "from_domain_spf" {
   name    = local.mail_from_domain
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
-  value   = "v=spf1 include:amazonses.com ~all"
+  content = "v=spf1 include:amazonses.com ~all"
   tags    = var.cloudflare_tags
   comment = "SPF record for ${local.email_domain} bounce messages"
 }
