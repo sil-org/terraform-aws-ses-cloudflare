@@ -35,3 +35,6 @@ terraform.rc
 
 # IDE configuration
 .idea/
+
+# Ignore terraform lock file in non-root modules
+.terraform.lock.hcl
