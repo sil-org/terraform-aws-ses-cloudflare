@@ -48,7 +48,7 @@ variable "create_spf_record" {
 variable "spf_record_text" {
   description = "text string for the email domain SPF record"
   type        = string
-  default     = "v=spf1 include:amazonses.com -all"
+  default     = "\"v=spf1 include:amazonses.com -all\""
 }
 
 variable "create_dmarc_record" {
@@ -60,7 +60,7 @@ variable "create_dmarc_record" {
 variable "dmarc_record_text" {
   description = "text string for the email domain DMARC record"
   type        = string
-  default     = "v=DMARC1; p=none; sp=reject"
+  default     = "\"v=DMARC1; p=none; sp=reject\""
 }
 
 variable "cloudflare_tags" {
