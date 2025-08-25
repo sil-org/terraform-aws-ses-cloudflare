@@ -204,7 +204,7 @@ resource "aws_sns_topic" "ses_bounces" {
   )
   name = coalesce(
     var.bounce_topic_name,
-    "${regexreplace(local.email_domain, "[^A-Za-z0-9-_]", "-")}-ses-bounces"
+    "${replace(local.email_domain, "/[^A-Za-z0-9-_]/", "-")}-ses-bounces"
   )
 }
 
