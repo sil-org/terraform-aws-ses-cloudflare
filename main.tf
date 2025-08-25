@@ -198,6 +198,10 @@ resource "aws_sns_topic" "ses_bounces" {
 
   kms_master_key_id = "alias/aws/sns"
 
+  display_name = coalesce(
+    var.bounce_topic_name,
+    "${local.email_domain} SES bounces"
+  )
   name = coalesce(
     var.bounce_topic_name,
     "${regexreplace(local.email_domain, "[^A-Za-z0-9-_]", "-")}-ses-bounces"
