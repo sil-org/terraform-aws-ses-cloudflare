@@ -202,13 +202,13 @@ resource "aws_sns_topic" "ses_bounces" {
 resource "aws_sns_topic_policy" "ses_publish" {
   count = var.create_bounce_topic ? 1 : 0
 
-  arn    = one(aws_sns_topic.ses_bounces[*].arn)
+  arn = one(aws_sns_topic.ses_bounces[*].arn)
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Sid      = "AllowSESPublish",
-        Effect   = "Allow",
+        Sid    = "AllowSESPublish",
+        Effect = "Allow",
         Principal = {
           Service = "ses.amazonaws.com"
         },
