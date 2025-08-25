@@ -17,3 +17,7 @@ output "smtp_username" {
 output "ecs_role_arn" {
   value = one(aws_iam_role.ecs[*].arn)
 }
+
+output "sns_bounce_topic_arn" {
+  value = one(aws_sns_topic.ses_bounces[*].arn)
+}

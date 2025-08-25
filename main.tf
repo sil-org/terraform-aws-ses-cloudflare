@@ -189,3 +189,48 @@ resource "aws_iam_role_policy" "ses" {
     }]
   })
 }
+
+/*
+ * Optional: SNS topic for SES Bounce notifications
+ */
+resource "aws_sns_topic" "ses_bounces" {
+  count = var.create_bounce_topic ? 1 : 0
+
+  name = var.bounce_topic_name == "" ? "${local.email_domain}-ses-bounces" : var.bounce_topic_name
+}
+
+resource "aws_sns_topic_policy" "ses_publish" {
+  count = var.create_bounce_topic ? 1 : 0
+
+  arn    = one(aws_sns_topic.ses_bounces[*].arn)
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid      = "AllowSESPublish",
+        Effect   = "Allow",
+        Principal = {
+          Service = "ses.amazonaws.com"
+        },
+        Action   = "sns:Publish",
+        Resource = one(aws_sns_topic.ses_bounces[*].arn),
+        Condition = {
+          StringEquals = {
+            "AWS:SourceAccount" = local.aws_account
+          },
+          StringLike = {
+            "AWS:SourceArn" = aws_ses_domain_identity.this.arn
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_ses_identity_notification_topic" "bounce" {
+  count = var.create_bounce_topic ? 1 : 0
+
+  identity          = one(aws_ses_domain_identity.this[*].domain)
+  notification_type = "Bounce"
+  topic_arn         = one(aws_sns_topic.ses_bounces[*].arn)
+}
