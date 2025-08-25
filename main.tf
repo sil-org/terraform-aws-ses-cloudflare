@@ -196,6 +196,8 @@ resource "aws_iam_role_policy" "ses" {
 resource "aws_sns_topic" "ses_bounces" {
   count = var.create_bounce_topic ? 1 : 0
 
+  kms_master_key_id = "alias/aws/sns"
+
   name = var.bounce_topic_name == "" ? "${local.email_domain}-ses-bounces" : var.bounce_topic_name
 }
 
