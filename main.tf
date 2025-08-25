@@ -198,7 +198,10 @@ resource "aws_sns_topic" "ses_bounces" {
 
   kms_master_key_id = "alias/aws/sns"
 
-  name = var.bounce_topic_name == "" ? "${regexreplace(local.email_domain, "[^A-Za-z0-9-_]", "-")}-ses-bounces" : var.bounce_topic_name
+  name = coalesce(
+    var.bounce_topic_name,
+    "${regexreplace(local.email_domain, "[^A-Za-z0-9-_]", "-")}-ses-bounces"
+  )
 }
 
 resource "aws_sns_topic_policy" "ses_publish" {
