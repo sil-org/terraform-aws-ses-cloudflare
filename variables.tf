@@ -71,7 +71,6 @@ variable "cloudflare_tags" {
   ]
 }
 
-# New: SNS topic for SES bounces
 variable "create_bounce_topic" {
   description = "create an SNS topic and configure SES to publish Bounce notifications to it"
   type        = bool
@@ -79,7 +78,7 @@ variable "create_bounce_topic" {
 }
 
 variable "bounce_topic_name" {
-  description = "name for the SNS topic that receives SES bounce notifications; default uses <email_domain>-ses-bounces"
+  description = "name for the SNS topic that receives SES bounce notifications; default uses (domain from email_from_address)-ses-bounces"
   type        = string
   default     = ""
 }
