@@ -18,6 +18,8 @@ module "all" {
   dmarc_record_text   = "v=DMARC1; p=none; sp=reject"
   mail_from_subdomain = "bounce"
   cloudflare_tags     = ["customer:Acme, Inc."]
+  create_bounce_topic = true
+  bounce_topic_name   = "example-ses-bounces"
 }
 
 provider "aws" {

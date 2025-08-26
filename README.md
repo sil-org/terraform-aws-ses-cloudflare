@@ -10,3 +10,4 @@ Includes:
 * Optional: AWS IAM user for SMTP mailing
 * Optional: AWS IAM ECS Role
 * Optional: SPF and DMARC records for mail domain
+* Optional: SNS topic for SES bounce notifications
