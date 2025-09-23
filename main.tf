@@ -237,7 +237,8 @@ resource "aws_sns_topic_policy" "ses_publish" {
 resource "aws_ses_identity_notification_topic" "bounce" {
   count = var.create_bounce_topic ? 1 : 0
 
-  identity          = one(aws_ses_domain_identity.this[*].arn)
-  notification_type = "Bounce"
-  topic_arn         = one(aws_sns_topic.ses_bounces[*].arn)
+  identity                 = one(aws_ses_domain_identity.this[*].arn)
+  include_original_headers = true
+  notification_type        = "Bounce"
+  topic_arn                = one(aws_sns_topic.ses_bounces[*].arn)
 }
