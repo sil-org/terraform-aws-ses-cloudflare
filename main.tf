@@ -1,6 +1,6 @@
 locals {
   aws_account      = data.aws_caller_identity.this.account_id
-  aws_region       = data.aws_region.current.name
+  aws_region       = data.aws_region.current.region
   email_domain     = split("@", var.email_from_address)[1]
   mail_from_domain = "${var.mail_from_subdomain}.${local.email_domain}"
 }
@@ -10,7 +10,9 @@ data "aws_caller_identity" "this" {}
 data "aws_region" "current" {}
 
 data "cloudflare_zone" "this" {
-  name = var.cloudflare_domain == "" ? local.email_domain : var.cloudflare_domain
+  filter = {
+    name = var.cloudflare_domain == "" ? local.email_domain : var.cloudflare_domain
+  }
 }
 
 /*
@@ -25,7 +27,7 @@ resource "aws_ses_domain_dkim" "this" {
   domain = one(aws_ses_domain_identity.this[*].domain)
 }
 
-resource "cloudflare_record" "ses_dkim" {
+resource "cloudflare_dns_record" "ses_dkim" {
   count = 3
 
   name    = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}._domainkey.${local.email_domain}"
@@ -34,10 +36,11 @@ resource "cloudflare_record" "ses_dkim" {
   content = "${element(one(aws_ses_domain_dkim.this[*].dkim_tokens), count.index)}.dkim.amazonses.com"
   tags    = var.cloudflare_tags
   comment = "DKIM record for email authentication"
+  ttl     = 1
 }
 
 # TXT record for SPF
-resource "cloudflare_record" "spf" {
+resource "cloudflare_dns_record" "spf" {
   count = var.create_spf_record ? 1 : 0
 
   name    = local.email_domain
@@ -46,10 +49,11 @@ resource "cloudflare_record" "spf" {
   content = var.spf_record_text
   tags    = var.cloudflare_tags
   comment = "SPF record for email authentication"
+  ttl     = 1
 }
 
 # DMARC record
-resource "cloudflare_record" "dmarc" {
+resource "cloudflare_dns_record" "dmarc" {
   count = var.create_dmarc_record ? 1 : 0
 
   name    = "_dmarc.${local.email_domain}"
@@ -60,6 +64,7 @@ resource "cloudflare_record" "dmarc" {
 
   comment = "DMARC record for ${local.email_domain}"
   tags    = var.cloudflare_tags
+  ttl     = 1
 }
 
 /*
@@ -74,7 +79,7 @@ resource "aws_ses_domain_mail_from" "this" {
   ]
 }
 
-resource "cloudflare_record" "from_domain_mx" {
+resource "cloudflare_dns_record" "from_domain_mx" {
   name     = local.mail_from_domain
   type     = "MX"
   zone_id  = data.cloudflare_zone.this.id
@@ -82,15 +87,17 @@ resource "cloudflare_record" "from_domain_mx" {
   content  = "feedback-smtp.${local.aws_region}.amazonses.com"
   tags     = var.cloudflare_tags
   comment  = "MX record for ${local.email_domain} bounce messages"
+  ttl      = 1
 }
 
-resource "cloudflare_record" "from_domain_spf" {
+resource "cloudflare_dns_record" "from_domain_spf" {
   name    = local.mail_from_domain
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
   content = "\"v=spf1 include:amazonses.com -all\""
   tags    = var.cloudflare_tags
   comment = "SPF record for ${local.email_domain} bounce messages"
+  ttl     = 1
 }
 
 /*
