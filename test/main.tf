@@ -12,9 +12,10 @@ module "all" {
   smtp_user_name      = "smtp-user-example-com"
   create_ecs_role     = true
   ecs_role_name       = "ecs-role-example-com"
-  create_spf_record   = true
-  spf_record_text     = "v=spf1 include:amazonses.com -all"
-  create_dmarc_record = true
+  create_spf_record           = true
+  spf_record_text             = "v=spf1 include:amazonses.com -all"
+  mail_from_spf_record_text   = "\"v=spf1 mx include:amazonses.com -all\""
+  create_dmarc_record         = true
   dmarc_record_text   = "v=DMARC1; p=none; sp=reject"
   mail_from_subdomain = "bounce"
   cloudflare_tags     = ["customer:Acme, Inc."]

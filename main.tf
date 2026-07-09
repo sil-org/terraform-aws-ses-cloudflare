@@ -94,7 +94,7 @@ resource "cloudflare_dns_record" "from_domain_spf" {
   name    = local.mail_from_domain
   type    = "TXT"
   zone_id = data.cloudflare_zone.this.id
-  content = "\"v=spf1 include:amazonses.com -all\""
+  content = var.mail_from_spf_record_text
   tags    = var.cloudflare_tags
   comment = "SPF record for ${local.email_domain} bounce messages"
   ttl     = 1

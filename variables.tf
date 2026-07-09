@@ -51,6 +51,12 @@ variable "spf_record_text" {
   default     = "\"v=spf1 include:amazonses.com -all\""
 }
 
+variable "mail_from_spf_record_text" {
+  description = "text string for the MAIL FROM subdomain SPF record"
+  type        = string
+  default     = "\"v=spf1 mx include:amazonses.com -all\""
+}
+
 variable "create_dmarc_record" {
   description = "enable creation of a DMARC record for the email domain"
   type        = string
