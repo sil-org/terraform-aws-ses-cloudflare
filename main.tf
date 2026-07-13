@@ -249,3 +249,28 @@ resource "aws_ses_identity_notification_topic" "bounce" {
   notification_type        = "Bounce"
   topic_arn                = one(aws_sns_topic.ses_bounces[*].arn)
 }
+
+moved {
+  from = cloudflare_record.ses_dkim
+  to   = cloudflare_dns_record.ses_dkim
+}
+
+moved {
+  from = cloudflare_record.spf
+  to   = cloudflare_dns_record.spf
+}
+
+moved {
+  from = cloudflare_record.dmarc
+  to   = cloudflare_dns_record.dmarc
+}
+
+moved {
+  from = cloudflare_record.from_domain_mx
+  to   = cloudflare_dns_record.from_domain_mx
+}
+
+moved {
+  from = cloudflare_record.from_domain_spf
+  to   = cloudflare_dns_record.from_domain_spf
+}
